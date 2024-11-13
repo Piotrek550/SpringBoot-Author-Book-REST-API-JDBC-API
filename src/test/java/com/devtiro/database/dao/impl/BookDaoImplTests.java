@@ -25,11 +25,7 @@ public class BookDaoImplTests {
     @Test
     public void testThatCreateBookGeneratesCorrectSql() {
 
-        Book book = Book.builder()
-                .isbn("978-1-2345-6789-0")
-                .title("Nie-boska komedia")
-                .authorId(1L)
-                .build();
+        Book book = TestDataUtil.createTestBook();
 
         underTest.create(book);
 
