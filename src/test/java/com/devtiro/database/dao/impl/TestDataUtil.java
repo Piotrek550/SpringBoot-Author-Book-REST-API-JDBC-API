@@ -6,11 +6,27 @@ import com.devtiro.database.domain.Book;
 public final class TestDataUtil {
     private TestDataUtil(){}
 
-    public static Author createTestAuthor() {
+    public static Author createTestAuthorA() {
         return Author.builder()
                 .id(1L)
                 .name("Zygmunt Krasicki")
                 .age(60)
+                .build();
+    }
+
+    public static Author createTestAuthorB() {
+        return Author.builder()
+                .id(2L)
+                .name("Stanislaw Wyspianski")
+                .age(55)
+                .build();
+    }
+
+    public static Author createTestAuthorC() {
+        return Author.builder()
+                .id(3L)
+                .name("SBoleslaw Prus")
+                .age(47)
                 .build();
     }
 
