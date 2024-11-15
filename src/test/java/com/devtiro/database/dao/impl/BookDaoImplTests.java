@@ -58,4 +58,27 @@ public class BookDaoImplTests {
         );
     }
 
+    @Test
+    public void testThatUpdateBookGeneratesTheCorrectSql() {
+        Book book = TestDataUtil.createTestBook();
+        underTest.update(book.getIsbn(), book);
+
+        verify(jdbcTemplate).update(
+                eq("UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?"),
+                eq("978-1-2345-6789-0"),
+                eq("Nie-boska komedia"),
+                eq(1L),
+                eq("978-1-2345-6789-0")
+        );
+    }
+
+    @Test
+    public void testThatDeleteBookGeneratesTheCorrectSql() {
+        underTest.delete("978-1-2345-6789-0");
+        verify(jdbcTemplate).update(
+                eq("DELETE FROM books WHERE isbn = ?"),
+                eq("978-1-2345-6789-0")
+        );
+    }
+
 }

@@ -38,4 +38,29 @@ public class BookDaoImplIntegrationTests {
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(book);
     }
+
+    @Test
+    public void testThatBookCanBeUpdated() {
+        Author author = TestDataUtil.createTestAuthorA();
+        authorDao.create(author);
+        Book book = TestDataUtil.createTestBook();
+        underTest.create(book);
+        book.setTitle("TITLE UPDATED");
+        underTest.update(book.getIsbn(), book);
+        Optional<Book> result = underTest.findOne(book.getIsbn());
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(book);
+    }
+
+    @Test
+    public void testThatBookCanBeDeleted() {
+        Author author = TestDataUtil.createTestAuthorA();
+        authorDao.create(author);
+        Book book = TestDataUtil.createTestBook();
+        underTest.create(book);
+        underTest.delete(book.getIsbn());
+        Optional<Book> result = underTest.findOne(book.getIsbn());
+        assertThat(result).isEmpty();
+    }
 }
