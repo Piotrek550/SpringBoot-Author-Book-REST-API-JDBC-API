@@ -1,18 +1,19 @@
 package com.devtiro.database.dao;
 
-import com.devtiro.database.domain.Book;
+
+import com.devtiro.database.domain.entities.BookEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface BookDao {
-    void create(Book book);
+    void create(BookEntity book);
 
-    Optional<Book> findOne(String isbn);
+    Optional<BookEntity> findOne(String isbn);
 
-    List<Book> find();
+    List<BookEntity> find();
 
-    void update(String isbn, Book book);
+    void update(String isbn, BookEntity book);
 
     void delete(String isbn);
 }

@@ -1,19 +1,19 @@
 package com.devtiro.database.dao;
 
-import com.devtiro.database.domain.Author;
+import com.devtiro.database.domain.entities.AuthorEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AuthorDao {
 
-    void create(Author author);
+    void create(AuthorEntity author);
 
-    Optional<Author> findOne(long authorId);
+    Optional<AuthorEntity> findOne(long authorId);
 
-    List<Author> find();
+    List<AuthorEntity> find();
 
-    void update(long authorId, Author author);
+    void update(long authorId, AuthorEntity author);
 
     void delete(long authorId);
 }

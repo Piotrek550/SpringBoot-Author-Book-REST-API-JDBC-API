@@ -1,4 +1,4 @@
-package com.devtiro.database.domain;
+package com.devtiro.database.domain.entities;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Book {
+public class BookEntity {
 
     private String isbn;
 

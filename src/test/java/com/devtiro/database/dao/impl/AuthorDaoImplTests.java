@@ -1,7 +1,8 @@
 package com.devtiro.database.dao.impl;
 
 
-import com.devtiro.database.domain.Author;
+import com.devtiro.database.TestDataUtil;
+import com.devtiro.database.domain.entities.AuthorEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -10,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -25,7 +25,7 @@ public class AuthorDaoImplTests {
 
     @Test
     public void testThatCreateAuthorGeneratesTheCorrectSql() {
-        Author author = TestDataUtil.createTestAuthorA();
+        AuthorEntity author = TestDataUtil.createTestAuthorEntityA();
 
         underTest.create(author);
 
@@ -60,7 +60,7 @@ public class AuthorDaoImplTests {
 
     @Test
     public void testThatUpdateGeneratesTheCorrectSql() {
-        Author author = TestDataUtil.createTestAuthorA();
+        AuthorEntity author = TestDataUtil.createTestAuthorEntityA();
         underTest.update(author.getId(),author);
 
         verify(jdbcTemplate).update(

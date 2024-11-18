@@ -1,6 +1,7 @@
 package com.devtiro.database.dao.impl;
 
-import com.devtiro.database.domain.Author;
+import com.devtiro.database.TestDataUtil;
+import com.devtiro.database.domain.entities.AuthorEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,44 +28,44 @@ public class AuthorDaoImplIntergationTests {
 
     @Test
     public void testThatAuthorCanBeCreatedAndRecalled() {
-        Author author = TestDataUtil.createTestAuthorA();
+        AuthorEntity author = TestDataUtil.createTestAuthorEntityA();
         underTest.create(author);
-        Optional<Author> result = underTest.findOne(author.getId());
+        Optional<AuthorEntity> result = underTest.findOne(author.getId());
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(author);
     }
 
     @Test
     public void testThatMultipleAuthorsCanBeCreatedAndRecalled() {
-        Author authorA = TestDataUtil.createTestAuthorA();
-        Author authorB = TestDataUtil.createTestAuthorB();
-        Author authorC = TestDataUtil.createTestAuthorC();
+        AuthorEntity authorA = TestDataUtil.createTestAuthorEntityA();
+        AuthorEntity authorB = TestDataUtil.createTestAuthorEntityB();
+        AuthorEntity authorC = TestDataUtil.createTestAuthorEntityC();
         underTest.create(authorA);
         underTest.create(authorB);
         underTest.create(authorC);
 
-        List<Author> result = underTest.find();
+        List<AuthorEntity> result = underTest.find();
         assertThat(result).hasSize(3);
         assertThat(result).containsExactly(authorA, authorB, authorC);
     }
 
     @Test
     public void testThatAuthorCanBeUpdated() {
-        Author authorA = TestDataUtil.createTestAuthorA();
+        AuthorEntity authorA = TestDataUtil.createTestAuthorEntityA();
         underTest.create(authorA);
         authorA.setName("ZMIENIONE");
         underTest.update(authorA.getId(),authorA);
-        Optional<Author> result = underTest.findOne(authorA.getId());
+        Optional<AuthorEntity> result = underTest.findOne(authorA.getId());
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(authorA);
     }
 
     @Test
     public void testThatAuthorCanBeDeleted() {
-        Author authorA = TestDataUtil.createTestAuthorA();
+        AuthorEntity authorA = TestDataUtil.createTestAuthorEntityA();
         underTest.create(authorA);
         underTest.delete(authorA.getId());
-        Optional<Author> result = underTest.findOne(authorA.getId());
+        Optional<AuthorEntity> result = underTest.findOne(authorA.getId());
         assertThat(result).isEmpty();
     }
 }

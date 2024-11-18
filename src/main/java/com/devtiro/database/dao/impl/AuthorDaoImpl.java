@@ -1,7 +1,7 @@
 package com.devtiro.database.dao.impl;
 
 import com.devtiro.database.dao.AuthorDao;
-import com.devtiro.database.domain.Author;
+import com.devtiro.database.domain.entities.AuthorEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public void create(Author author) {
+    public void create(AuthorEntity author) {
         jdbcTemplate.update(
                 "INSERT INTO authors (id, name, age) VALUES (?, ?, ?)",
                 author.getId(),
@@ -31,15 +31,15 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public Optional<Author> findOne(long authorId) {
-        List<Author> results = jdbcTemplate.query(
+    public Optional<AuthorEntity> findOne(long authorId) {
+        List<AuthorEntity> results = jdbcTemplate.query(
                 "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
                 new AuthorRowMapper(), authorId);
         return results.stream().findFirst();
     }
 
     @Override
-    public List<Author> find() {
+    public List<AuthorEntity> find() {
         return jdbcTemplate.query(
                 "SELECT id, name, age FROM authors",
                 new AuthorRowMapper()
@@ -47,7 +47,7 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public void update(long authorId, Author author) {
+    public void update(long authorId, AuthorEntity author) {
         jdbcTemplate.update(
                 "UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?",
                 author.getId(),
@@ -65,11 +65,11 @@ public class AuthorDaoImpl implements AuthorDao {
         );
     }
 
-    public static class AuthorRowMapper implements RowMapper<Author> {
+    public static class AuthorRowMapper implements RowMapper<AuthorEntity> {
 
         @Override
-        public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return Author.builder()
+        public AuthorEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return AuthorEntity.builder()
                     .id(rs.getLong("id"))
                     .name(rs.getString("name"))
                     .age(rs.getInt("age"))

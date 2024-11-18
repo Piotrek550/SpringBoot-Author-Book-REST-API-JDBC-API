@@ -1,4 +1,4 @@
-package com.devtiro.database.domain;
+package com.devtiro.database.domain.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Author {
+public class AuthorEntity {
 
     private Long id;
 

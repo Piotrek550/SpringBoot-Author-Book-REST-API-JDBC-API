@@ -1,7 +1,7 @@
 package com.devtiro.database.dao.impl;
 
 import com.devtiro.database.dao.BookDao;
-import com.devtiro.database.domain.Book;
+import com.devtiro.database.domain.entities.BookEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void create(Book book) {
+    public void create(BookEntity book) {
         jdbcTemplate.update(
                 "INSERT INTO books (isbn, title, author_id) VALUES (?, ?, ?)",
                 book.getIsbn(),
@@ -31,8 +31,8 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public Optional<Book> findOne(String isbn) {
-        List<Book> result = jdbcTemplate.query(
+    public Optional<BookEntity> findOne(String isbn) {
+        List<BookEntity> result = jdbcTemplate.query(
                 "SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1",
                 new BookRowMapper(),
                 isbn
@@ -41,14 +41,14 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public List<Book> find() {
+    public List<BookEntity> find() {
         return jdbcTemplate.query(
                 "SELECT isbn, title, author_id FROM books",
                 new BookRowMapper());
     }
 
     @Override
-    public void update(String isbn, Book book) {
+    public void update(String isbn, BookEntity book) {
         jdbcTemplate.update(
                 "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
                 book.getIsbn(),
@@ -63,11 +63,11 @@ public class BookDaoImpl implements BookDao {
         jdbcTemplate.update("DELETE FROM books WHERE isbn = ?",isbn);
     }
 
-    public static class BookRowMapper implements RowMapper<Book> {
+    public static class BookRowMapper implements RowMapper<BookEntity> {
 
         @Override
-        public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return Book.builder()
+        public BookEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return BookEntity.builder()
                     .isbn(rs.getString("isbn"))
                     .title(rs.getString("title"))
                     .authorId(rs.getLong("author_id"))
