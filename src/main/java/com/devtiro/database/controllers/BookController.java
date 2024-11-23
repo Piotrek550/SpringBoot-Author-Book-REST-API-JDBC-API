@@ -1,5 +1,6 @@
 package com.devtiro.database.controllers;
 
+import com.devtiro.database.domain.dto.AuthorDto;
 import com.devtiro.database.domain.entities.BookEntity;
 import com.devtiro.database.domain.dto.BookDto;
 import com.devtiro.database.mappers.Mapper;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +30,24 @@ public class BookController {
             @PathVariable("isbn") String isbn,
             @RequestBody BookDto bookDto) {
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
-        BookEntity savedBookEntity = bookService.createBook(isbn, bookEntity);
-        BookDto savedBookDto = bookMapper.mapTo(savedBookEntity);
-
-        return new ResponseEntity<>(savedBookDto, HttpStatus.CREATED);
+        if(!bookService.isExists(isbn)) {
+            Optional<BookEntity> savedBookEntity = bookService.createBook(isbn, bookEntity);
+            return savedBookEntity.map(returnedBookEntity -> {
+                BookDto createdBookDto = bookMapper.mapTo(returnedBookEntity);
+                return new ResponseEntity<>(createdBookDto,HttpStatus.CREATED);
+            }).orElse(
+                    new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
+            );
+        }
+        else {
+            Optional<BookEntity> updatedBookEntity = bookService.update(isbn, bookEntity);
+            return updatedBookEntity.map(returnedBookEntity -> {
+                BookDto updatedBookDto = bookMapper.mapTo(returnedBookEntity);
+                return new ResponseEntity<>(updatedBookDto,HttpStatus.OK);
+            }).orElse(
+                    new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
+            );
+        }
     }
 
     @GetMapping(path = "/books")
@@ -41,11 +57,44 @@ public class BookController {
     }
 
     @GetMapping(path = "/books/{isbn}")
-    public ResponseEntity<BookDto> getBook(@PathVariable String isbn) {
+    public ResponseEntity<BookDto> getBook(@PathVariable("isbn") String isbn) {
         Optional<BookEntity> foundBook = bookService.findOne(isbn);
         return foundBook.map(bookEntity -> {
             BookDto bookDto = bookMapper.mapTo(bookEntity);
             return new ResponseEntity<>(bookDto, HttpStatus.OK);
+        }).orElse(
+                new ResponseEntity<>(HttpStatus.NOT_FOUND)
+        );
+    }
+
+    @PatchMapping(path = "/books/{isbn}")
+    public ResponseEntity<BookDto> partialUpdateBook(
+            @PathVariable("isbn") String isbn,
+            @RequestBody BookDto bookDto
+    )
+    {
+        if(!bookService.isExists(isbn))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        BookEntity bookToPartialUpdate = bookMapper.mapFrom(bookDto);
+        Optional<BookEntity> partialUpdatedBook = bookService.partialUpdate(isbn,bookToPartialUpdate);
+        return partialUpdatedBook.map(partialUpdatedBookDto -> {
+            BookDto toReturn = bookMapper.mapTo(partialUpdatedBookDto);
+            return new ResponseEntity<>(toReturn, HttpStatus.OK);
+        }).orElse(
+                new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
+        );
+    }
+
+    @DeleteMapping(path = "/books/{isbn}")
+    public ResponseEntity<BookDto> deleteBook(
+            @PathVariable("isbn") String isbn
+    )
+    {
+        Optional<BookEntity> deletedBookEntity = bookService.delete(isbn);
+        return deletedBookEntity.map(deletedBook -> {
+            BookDto deletedBookDto = bookMapper.mapTo(deletedBook);
+            return new ResponseEntity<>(deletedBookDto, HttpStatus.OK);
         }).orElse(
                 new ResponseEntity<>(HttpStatus.NOT_FOUND)
         );

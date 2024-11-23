@@ -56,12 +56,13 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Optional<AuthorEntity> update(long authorId, AuthorEntity author) {
-        jdbcTemplate.update(
+        if(this.isExists(authorId))
+            jdbcTemplate.update(
                 "UPDATE authors SET name = ?, age = ? WHERE id = ?",
                 author.getName(),
                 author.getAge(),
                 authorId
-        );
+            );
         return jdbcTemplate.query(
                 "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
                 authorRowMapper,

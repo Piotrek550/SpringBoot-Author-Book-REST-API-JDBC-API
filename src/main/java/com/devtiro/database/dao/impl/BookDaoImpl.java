@@ -24,13 +24,15 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void create(BookEntity book) {
+    public Optional<BookEntity> create(BookEntity book) {
         jdbcTemplate.update(
                 "INSERT INTO books (isbn, title, author_id) VALUES (?, ?, ?)",
                 book.getIsbn(),
                 book.getTitle(),
                 book.getAuthorId()
         );
+
+        return this.findOne(book.getIsbn());
     }
 
     @Override
@@ -51,19 +53,32 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void update(String isbn, BookEntity book) {
-        jdbcTemplate.update(
-                "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
-                book.getIsbn(),
-                book.getTitle(),
-                book.getAuthorId(),
-                isbn
-        );
+    public Optional<BookEntity> update(String isbn, BookEntity book) {
+        Optional<BookEntity> bookUpdate = this.findOne(isbn);
+        if(bookUpdate.isPresent()) {
+            jdbcTemplate.update(
+                    "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
+                    book.getIsbn(),
+                    book.getTitle(),
+                    book.getAuthorId(),
+                    isbn
+            );
+            bookUpdate = this.findOne(isbn);
+        }
+        return bookUpdate;
     }
 
     @Override
-    public void delete(String isbn) {
-        jdbcTemplate.update("DELETE FROM books WHERE isbn = ?",isbn);
+    public Optional<BookEntity> delete(String isbn) {
+        Optional<BookEntity> bookToDelete = this.findOne(isbn);
+        if(bookToDelete.isPresent())
+            jdbcTemplate.update("DELETE FROM books WHERE isbn = ?",isbn);
+        return bookToDelete;
+    }
+
+    @Override
+    public boolean isExists(String isbn) {
+        return this.findOne(isbn).isPresent();
     }
 
     public static class BookRowMapper implements RowMapper<BookEntity> {

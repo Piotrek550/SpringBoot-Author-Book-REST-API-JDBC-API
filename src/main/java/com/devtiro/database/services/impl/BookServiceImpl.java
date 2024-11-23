@@ -19,10 +19,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookEntity createBook(String isbn, BookEntity book) {
+    public Optional<BookEntity> createBook(String isbn, BookEntity book) {
         book.setIsbn(isbn);
-        bookDao.create(book);
-        return book;
+        return bookDao.create(book);
     }
 
     @Override
@@ -37,5 +36,34 @@ public class BookServiceImpl implements BookService {
     @Override
     public Optional<BookEntity> findOne(String isbn) {
         return bookDao.findOne(isbn);
+    }
+
+    @Override
+    public Optional<BookEntity> update(String isbn, BookEntity bookEntity) {
+        bookEntity.setIsbn(isbn);
+        return bookDao.update(isbn, bookEntity);
+    }
+
+    @Override
+    public Optional<BookEntity> partialUpdate(String isbn, BookEntity bookEntity) {
+        bookEntity.setIsbn(isbn);
+        return bookDao.findOne(isbn).map(existingBook -> {
+            Optional.ofNullable(bookEntity.getIsbn()).ifPresent(existingBook::setIsbn);
+            Optional.ofNullable(bookEntity.getTitle()).ifPresent(existingBook::setTitle);
+            Optional.ofNullable(bookEntity.getAuthorId()).ifPresent(existingBook::setAuthorId);
+            return bookDao.update(isbn,existingBook);
+        }).orElseThrow(
+                () -> new RuntimeException("Ksiazka nie istnieje!")
+        );
+    }
+
+    @Override
+    public Optional<BookEntity> delete(String isbn) {
+        return bookDao.delete(isbn);
+    }
+
+    @Override
+    public boolean isExists(String isbn) {
+        return bookDao.isExists(isbn);
     }
 }

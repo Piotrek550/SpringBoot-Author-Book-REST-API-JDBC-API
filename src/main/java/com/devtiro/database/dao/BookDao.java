@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookDao {
-    void create(BookEntity book);
+    Optional<BookEntity> create(BookEntity book);
 
     Optional<BookEntity> findOne(String isbn);
 
     List<BookEntity> find();
 
-    void update(String isbn, BookEntity book);
+    Optional<BookEntity> update(String isbn, BookEntity book);
 
-    void delete(String isbn);
+    Optional<BookEntity> delete(String isbn);
+
+    boolean isExists(String isbn);
 }
