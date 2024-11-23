@@ -16,25 +16,33 @@ public class AuthorDaoImpl implements AuthorDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    public AuthorRowMapper authorRowMapper;
+
     public AuthorDaoImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        authorRowMapper = new AuthorRowMapper();
     }
 
     @Override
-    public void create(AuthorEntity author) {
-        jdbcTemplate.update(
-                "INSERT INTO authors (id, name, age) VALUES (?, ?, ?)",
-                author.getId(),
+    public Optional<AuthorEntity> create(AuthorEntity author) {
+          jdbcTemplate.update(
+                  "INSERT INTO authors (name, age) VALUES (?, ?)",
+                  author.getName(),
+                  author.getAge()
+          );
+          return jdbcTemplate.query(
+                "SELECT id, name, age FROM authors WHERE name = ? AND age = ? LIMIT 1",
+                authorRowMapper,
                 author.getName(),
                 author.getAge()
-        );
+        ).stream().findFirst();
     }
 
     @Override
     public Optional<AuthorEntity> findOne(long authorId) {
         List<AuthorEntity> results = jdbcTemplate.query(
                 "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
-                new AuthorRowMapper(), authorId);
+                authorRowMapper, authorId);
         return results.stream().findFirst();
     }
 
@@ -42,27 +50,40 @@ public class AuthorDaoImpl implements AuthorDao {
     public List<AuthorEntity> find() {
         return jdbcTemplate.query(
                 "SELECT id, name, age FROM authors",
-                new AuthorRowMapper()
+                authorRowMapper
         );
     }
 
     @Override
-    public void update(long authorId, AuthorEntity author) {
+    public Optional<AuthorEntity> update(long authorId, AuthorEntity author) {
         jdbcTemplate.update(
-                "UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?",
-                author.getId(),
+                "UPDATE authors SET name = ?, age = ? WHERE id = ?",
                 author.getName(),
                 author.getAge(),
                 authorId
         );
+        return jdbcTemplate.query(
+                "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
+                authorRowMapper,
+                authorId
+        ).stream().findFirst();
     }
 
     @Override
-    public void delete(long authorId) {
-        jdbcTemplate.update(
-                "DELETE FROM authors WHERE id = ?",
-                authorId
-        );
+    public Optional<AuthorEntity> delete(long authorId) {
+        Optional<AuthorEntity> authorToDelete = this.findOne(authorId);
+        if(authorToDelete.isPresent()) {
+            jdbcTemplate.update(
+                    "DELETE FROM authors WHERE id = ?",
+                    authorId
+            );
+        }
+        return authorToDelete;
+    }
+
+    @Override
+    public boolean isExists(long authorId) {
+        return this.findOne(authorId).isPresent();
     }
 
     public static class AuthorRowMapper implements RowMapper<AuthorEntity> {

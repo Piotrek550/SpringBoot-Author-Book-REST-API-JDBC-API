@@ -27,8 +27,13 @@ public class AuthorController {
     @PostMapping(path = "/authors")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
         AuthorEntity authorEntity = authorMapper.mapFrom(author);
-        AuthorEntity savedAuthorEntity = authorService.createAuthor(authorEntity);
-        return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.CREATED);
+        Optional<AuthorEntity> savedAuthorEntity = authorService.createAuthor(authorEntity);
+        return savedAuthorEntity.map(entity ->
+                        new ResponseEntity<>(authorMapper.mapTo(entity), HttpStatus.CREATED)
+                ).orElse(
+                        new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
+        );
+
     }
 
     @GetMapping(path = "/authors")
@@ -45,6 +50,57 @@ public class AuthorController {
             return new ResponseEntity<>(authorDto, HttpStatus.OK);
         }).orElse(
                 new ResponseEntity<>(HttpStatus.NOT_FOUND)
+        );
+    }
+
+    @PutMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> updateAuthor(
+            @PathVariable("id") Long id,
+            @RequestBody AuthorDto authorDto) {
+
+        if(!authorService.isExists(id))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Optional<AuthorEntity> updatedAuthor = authorService.update(id, authorMapper.mapFrom(authorDto));
+        return updatedAuthor.map(authorEntity -> {
+            AuthorDto updatedAuthorDto = authorMapper.mapTo(updatedAuthor.get());
+            return new ResponseEntity<>(updatedAuthorDto, HttpStatus.OK);
+        }).orElse(
+                new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
+        );
+    }
+
+    @PatchMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> partialUpdateAuthor(
+            @PathVariable("id") Long id,
+            @RequestBody AuthorDto authorDto
+    )
+    {
+        if(!authorService.isExists(id))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
+        Optional<AuthorEntity> partialUpdatedAuthor = authorService.partialUpdate(id, authorEntity);
+        return partialUpdatedAuthor.map(updatedEntity -> {
+            AuthorDto partialUpdatedAuthorDto = authorMapper.mapTo(updatedEntity);
+            return new ResponseEntity<>(partialUpdatedAuthorDto, HttpStatus.OK);
+        }).orElse(
+                new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
+        );
+    }
+
+    @DeleteMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> deleteAuthor(@PathVariable("id") Long id) {
+
+        if(!authorService.isExists(id))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Optional<AuthorEntity> deletedAuthor = authorService.delete(id);
+        return deletedAuthor.map(authorEntity -> {
+            AuthorDto deletedAuthorDto = authorMapper.mapTo(deletedAuthor.get());
+            return new ResponseEntity<>(deletedAuthorDto, HttpStatus.OK);
+        }).orElse(
+                new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
         );
     }
 

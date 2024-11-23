@@ -19,9 +19,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorEntity createAuthor(AuthorEntity authorEntity) {
-        authorDao.create(authorEntity);
-        return authorEntity;
+    public Optional<AuthorEntity> createAuthor(AuthorEntity authorEntity) {
+        return authorDao.create(authorEntity);
     }
 
     @Override
@@ -36,5 +35,31 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Optional<AuthorEntity> findOne(Long authorId) {
         return authorDao.findOne(authorId);
+    }
+
+    public Optional<AuthorEntity> update(Long authorId, AuthorEntity authorEntity)
+    {
+        return authorDao.update(authorId, authorEntity);
+    }
+
+    @Override
+    public Optional<AuthorEntity> delete(Long authorId) {
+        return authorDao.delete(authorId);
+    }
+
+    @Override
+    public boolean isExists(Long authorId) {
+        return authorDao.isExists(authorId);
+    }
+
+    @Override
+    public Optional<AuthorEntity> partialUpdate(Long authorId, AuthorEntity authorEntity) {
+        return authorDao.findOne(authorId).map(existingAuthor -> {
+            Optional.ofNullable(authorEntity.getName()).ifPresent(existingAuthor::setName);
+            Optional.ofNullable(authorEntity.getAge()).ifPresent(existingAuthor::setAge);
+            return authorDao.update(authorId,existingAuthor);
+        }).orElseThrow(
+                () -> new RuntimeException("Autor nie istnieje!")
+        );
     }
 }

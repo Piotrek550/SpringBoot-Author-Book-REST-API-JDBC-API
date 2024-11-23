@@ -7,9 +7,16 @@ import java.util.Optional;
 
 public interface AuthorService {
 
-    public AuthorEntity createAuthor(AuthorEntity authorEntity);
+    Optional<AuthorEntity> createAuthor(AuthorEntity authorEntity);
 
     List<AuthorEntity> findAll();
 
     Optional<AuthorEntity> findOne(Long authorId);
+
+    Optional<AuthorEntity> update(Long authorId, AuthorEntity authorEntity);
+
+    Optional<AuthorEntity> delete(Long authorId);
+
+    boolean isExists(Long authorId);
+    Optional<AuthorEntity> partialUpdate(Long authorId, AuthorEntity authorEntity);
 }
