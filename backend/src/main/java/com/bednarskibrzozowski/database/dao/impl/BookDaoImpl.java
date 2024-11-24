@@ -54,25 +54,20 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Optional<BookEntity> update(String isbn, BookEntity book) {
-        Optional<BookEntity> bookUpdate = this.findOne(isbn);
-        if(bookUpdate.isPresent()) {
-            jdbcTemplate.update(
-                    "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
-                    book.getIsbn(),
-                    book.getTitle(),
-                    book.getAuthorId(),
-                    isbn
-            );
-            bookUpdate = this.findOne(isbn);
-        }
-        return bookUpdate;
+        jdbcTemplate.update(
+                "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
+                book.getIsbn(),
+                book.getTitle(),
+                book.getAuthorId(),
+                isbn
+        );
+        return this.findOne(isbn);
     }
 
     @Override
     public Optional<BookEntity> delete(String isbn) {
         Optional<BookEntity> bookToDelete = this.findOne(isbn);
-        if(bookToDelete.isPresent())
-            jdbcTemplate.update("DELETE FROM books WHERE isbn = ?",isbn);
+        jdbcTemplate.update("DELETE FROM books WHERE isbn = ?",isbn);
         return bookToDelete;
     }
 

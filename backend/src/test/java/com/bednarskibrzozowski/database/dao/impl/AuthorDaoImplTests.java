@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,8 +30,14 @@ public class AuthorDaoImplTests {
         underTest.create(author);
 
         verify(jdbcTemplate).update(
-                eq("INSERT INTO authors (id, name, age) VALUES (?, ?, ?)"),
-                eq(1L),
+                eq("INSERT INTO authors (name, age) VALUES (?, ?)"),
+                eq("Zygmunt Krasicki"),
+                eq(60)
+        );
+
+        verify(jdbcTemplate).query(
+                eq("SELECT id, name, age FROM authors WHERE name = ? AND age = ? LIMIT 1"),
+                ArgumentMatchers.<AuthorDaoImpl.AuthorRowMapper>any(),
                 eq("Zygmunt Krasicki"),
                 eq(60)
         );
@@ -64,17 +70,30 @@ public class AuthorDaoImplTests {
         underTest.update(author.getId(),author);
 
         verify(jdbcTemplate).update(
-                eq("UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?"),
-                eq(1L),
+                eq("UPDATE authors SET name = ?, age = ? WHERE id = ?"),
                 eq("Zygmunt Krasicki"),
                 eq(60),
                 eq(1L)
         );
+
+        verify(jdbcTemplate).query(
+                eq("SELECT id, name, age FROM authors WHERE id = ? LIMIT 1"),
+                ArgumentMatchers.<AuthorDaoImpl.AuthorRowMapper>any(),
+                eq(1L)
+        );
+
     }
+
 
     @Test
     public void testThatDeleteAuthorGeneratesTheCorrectSql() {
         underTest.delete(1L);
+
+        verify(jdbcTemplate).query(
+                eq("SELECT id, name, age FROM authors WHERE id = ? LIMIT 1"),
+                ArgumentMatchers.<AuthorDaoImpl.AuthorRowMapper>any(),
+                eq(1L)
+        );
 
         verify(jdbcTemplate).update(
                 eq("DELETE FROM authors WHERE id = ?"),

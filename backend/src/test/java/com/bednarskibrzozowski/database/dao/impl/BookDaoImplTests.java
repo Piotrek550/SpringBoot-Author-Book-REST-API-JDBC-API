@@ -73,11 +73,24 @@ public class BookDaoImplTests {
                 eq(1L),
                 eq("978-1-2345-6789-0")
         );
+
+        verify(jdbcTemplate).query(
+                eq("SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1"),
+                ArgumentMatchers.<BookDaoImpl.BookRowMapper>any(),
+                eq("978-1-2345-6789-0")
+        );
     }
 
     @Test
     public void testThatDeleteBookGeneratesTheCorrectSql() {
         underTest.delete("978-1-2345-6789-0");
+
+        verify(jdbcTemplate).query(
+                eq("SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1"),
+                ArgumentMatchers.<BookDaoImpl.BookRowMapper>any(),
+                eq("978-1-2345-6789-0")
+        );
+
         verify(jdbcTemplate).update(
                 eq("DELETE FROM books WHERE isbn = ?"),
                 eq("978-1-2345-6789-0")

@@ -2,6 +2,7 @@ package com.bednarskibrzozowski.database.dao.impl;
 
 import com.bednarskibrzozowski.database.dao.AuthorDao;
 import com.bednarskibrzozowski.database.domain.entities.AuthorEntity;
+import com.bednarskibrzozowski.database.domain.entities.BookEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -56,13 +57,12 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Optional<AuthorEntity> update(long authorId, AuthorEntity author) {
-        if(this.isExists(authorId))
-            jdbcTemplate.update(
+        jdbcTemplate.update(
                 "UPDATE authors SET name = ?, age = ? WHERE id = ?",
                 author.getName(),
                 author.getAge(),
                 authorId
-            );
+        );
         return jdbcTemplate.query(
                 "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
                 authorRowMapper,
@@ -73,18 +73,20 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Optional<AuthorEntity> delete(long authorId) {
         Optional<AuthorEntity> authorToDelete = this.findOne(authorId);
-        if(authorToDelete.isPresent()) {
-            jdbcTemplate.update(
-                    "DELETE FROM authors WHERE id = ?",
-                    authorId
-            );
-        }
+        jdbcTemplate.update(
+                "DELETE FROM authors WHERE id = ?",
+                authorId
+        );
         return authorToDelete;
     }
 
     @Override
     public boolean isExists(long authorId) {
-        return this.findOne(authorId).isPresent();
+        return jdbcTemplate.query(
+                "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
+                authorRowMapper,
+                authorId
+        ).stream().findFirst().isPresent();
     }
 
     public static class AuthorRowMapper implements RowMapper<AuthorEntity> {
