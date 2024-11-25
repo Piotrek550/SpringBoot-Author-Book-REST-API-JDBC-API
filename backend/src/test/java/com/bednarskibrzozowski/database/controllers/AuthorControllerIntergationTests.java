@@ -161,6 +161,7 @@ public class AuthorControllerIntergationTests {
         );
     }
 
+
     @Test
     public void testThatFullUpdateUpdatesExistingAuthor() throws Exception {
         AuthorEntity authorEntity = TestDataUtil.createTestAuthorEntityA();
