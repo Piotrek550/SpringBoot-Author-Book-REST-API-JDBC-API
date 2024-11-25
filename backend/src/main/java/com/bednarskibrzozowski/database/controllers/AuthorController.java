@@ -23,7 +23,7 @@ public class AuthorController {
         this.authorMapper = authorMapper;
     }
 
-    /*@PostMapping(path = "/authors")
+    @PostMapping(path = "/authors")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
         AuthorEntity authorEntity = authorMapper.mapFrom(author);
         Optional<AuthorEntity> savedAuthorEntity = authorService.createAuthor(authorEntity);
@@ -33,7 +33,7 @@ public class AuthorController {
                         new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
         );
 
-    }*/
+    }
 
     @GetMapping(path = "/authors")
     public List<AuthorDto> listAuthors() {
