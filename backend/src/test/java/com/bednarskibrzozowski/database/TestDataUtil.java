@@ -79,4 +79,28 @@ public final class TestDataUtil {
                 .author(authorDto)
                 .build();
     }
+
+    public static AuthorDto createTestAuthorDtoA() {
+        return AuthorDto.builder()
+                .id(1L)
+                .name("Zygmunt Krasicki")
+                .age(60)
+                .build();
+    }
+
+    public static AuthorDto createTestAuthorDtoB() {
+        return AuthorDto.builder()
+                .id(2L)
+                .name("Stanislaw Wyspianski")
+                .age(55)
+                .build();
+    }
+
+    public static AuthorDto createTestAuthorDtoC() {
+        return AuthorDto.builder()
+                .id(3L)
+                .name("Boleslaw Prus")
+                .age(47)
+                .build();
+    }
 }
