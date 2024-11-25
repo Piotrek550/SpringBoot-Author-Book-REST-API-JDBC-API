@@ -41,7 +41,7 @@ public class AuthorController {
         return authors.stream().map(authorMapper::mapTo).toList();
     }
 
-    /*@GetMapping(path = "/authors/{id}")
+    @GetMapping(path = "/authors/{id}")
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable("id") Long id) {
         Optional<AuthorEntity> foundAuthor = authorService.findOne(id);
         return foundAuthor.map(authorEntity -> {
@@ -50,7 +50,7 @@ public class AuthorController {
         }).orElse(
                 new ResponseEntity<>(HttpStatus.NOT_FOUND)
         );
-    }*/
+    }
 
     @PutMapping(path = "/authors/{id}")
     public ResponseEntity<AuthorDto> updateAuthor(
