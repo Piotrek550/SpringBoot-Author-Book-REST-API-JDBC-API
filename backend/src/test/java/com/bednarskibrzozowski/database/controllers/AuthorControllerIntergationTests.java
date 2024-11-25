@@ -115,6 +115,7 @@ public class AuthorControllerIntergationTests {
         );
     }
 
+
     @Test
     public void testThatGetAuthorSuccessfullyReturnsAuthorObject() throws Exception {
         AuthorEntity testAuthorA = TestDataUtil.createTestAuthorEntityA();
