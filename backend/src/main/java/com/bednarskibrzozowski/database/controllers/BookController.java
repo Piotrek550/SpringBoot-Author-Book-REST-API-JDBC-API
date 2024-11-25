@@ -23,7 +23,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PutMapping(path = "/books/{isbn}")
+    /*@PutMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> createBook(
             @PathVariable("isbn") String isbn,
             @RequestBody BookDto bookDto) {
@@ -46,7 +46,7 @@ public class BookController {
                     new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
             );
         }
-    }
+    }*/
 
     @GetMapping(path = "/books")
     public List<BookDto> listBooks() {

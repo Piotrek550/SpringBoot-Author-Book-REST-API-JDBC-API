@@ -42,6 +42,7 @@ public class BookControllerIntegrationTests {
         this.authorService = authorService;
     }
 
+
     @Test
     public void testThatCreateBookReturnsHttpStatus201Created() throws Exception {
         AuthorEntity authorEntity = TestDataUtil.createTestAuthorEntityA();
