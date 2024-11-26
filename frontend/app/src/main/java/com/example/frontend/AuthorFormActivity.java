@@ -1,14 +1,11 @@
 package com.example.frontend;
 
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.frontend.model.Author;
 import com.example.frontend.retrofit.AuthorApi;
@@ -23,13 +20,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class AuthorFormActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.authorForm_toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         this.initializeComponents();
     }
@@ -54,13 +58,13 @@ public class MainActivity extends AppCompatActivity {
                     .enqueue(new Callback<Author>() {
                         @Override
                         public void onResponse(Call<Author> call, Response<Author> response) {
-                            Toast.makeText(MainActivity.this, "Save successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AuthorFormActivity.this, "Save successful!", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onFailure(Call<Author> call, Throwable t) {
-                            Toast.makeText(MainActivity.this, "Save failed!!!", Toast.LENGTH_SHORT).show();
-                            Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, "Error occurred", t);
+                            Toast.makeText(AuthorFormActivity.this, "Save failed!!!", Toast.LENGTH_SHORT).show();
+                            Logger.getLogger(AuthorFormActivity.class.getName()).log(Level.SEVERE, "Error occurred", t);
                         }
                     });
         });
