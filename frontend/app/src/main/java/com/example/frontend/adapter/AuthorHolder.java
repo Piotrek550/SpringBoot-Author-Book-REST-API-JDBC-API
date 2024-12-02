@@ -17,5 +17,4 @@ public class AuthorHolder extends RecyclerView.ViewHolder {
         name = itemView.findViewById(R.id.authorListItem_name);
         age = itemView.findViewById(R.id.authorListItem_age);
     }
-
 }

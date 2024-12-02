@@ -3,4 +3,13 @@
     <string name="form_author_name">form_author_name</string>
     <string name="form_author_age">form_author_age</string>
     <string name="button_create_author">Create</string>
+    <string name="author_age">Age</string>
+    <string name="author_name">Name</string>
+    <string name="toAuthors_button">Authors</string>
+    <string name="toBooks_button">Books</string>
+    <string name="book_title">Title</string>
+    <string name="book_isbn">ISBN</string>
+    <string name="book_author">Author</string>
+    <string name="example_isbn">Example ISBNs:\nISBN-10: 3-1614-8410-0\nISBN-13: 978-3-1614-8410-0</string>
+    <string name="copyright_bednarski_i_brzozowski">Copyright© Bednarski i Brzozowski</string>
 </resources>

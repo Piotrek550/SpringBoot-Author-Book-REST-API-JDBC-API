@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,21 +19,35 @@
         android:theme="@style/Theme.Frontend"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
-            android:name=".AuthorListActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:label="Author list" >
+            android:label="Home Page">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name=".AuthorListActivity"
+            android:exported="true"
+            android:label="Author list"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".AuthorFormActivity"
             android:exported="true"
             android:label="Create new author"
-            android:parentActivityName=".AuthorListActivity" >
-        </activity>
+            android:parentActivityName=".AuthorListActivity" />
+        <activity
+            android:name=".BookFormActivity"
+            android:exported="true"
+            android:parentActivityName=".BookListActivity" />
+        <activity
+            android:name=".BookListActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

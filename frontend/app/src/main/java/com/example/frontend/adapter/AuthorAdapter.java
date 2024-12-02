@@ -9,12 +9,15 @@ import java.util.List;
 
 import com.example.frontend.R;
 import com.example.frontend.model.Author;
+import com.example.frontend.model.Book;
 
 public class AuthorAdapter extends RecyclerView.Adapter<AuthorHolder> {
     private List<Author> authorList;
+    private OnAuthorInteractionListener onAuthorInteractionListener;
 
-    public AuthorAdapter(List<Author> authorList) {
+    public AuthorAdapter(List<Author> authorList, OnAuthorInteractionListener onAuthorInteractionListener) {
         this.authorList = authorList;
+        this.onAuthorInteractionListener = onAuthorInteractionListener;
     }
 
     @NonNull
@@ -30,10 +33,37 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorHolder> {
         Author author = authorList.get(position);
         holder.name.setText(author.getName());
         holder.age.setText(String.valueOf(author.getAge()));
+
+        // Kliknięcie w element -> edycja
+        holder.itemView.setOnClickListener(v -> {
+            if (onAuthorInteractionListener != null) {
+                onAuthorInteractionListener.onAuthorEdit(author);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return authorList.size();
+    }
+
+    public List<Author> getAuthors() {
+        return authorList;
+    }
+
+    public void removeItem(int position) {
+        Author author = authorList.get(position);
+
+        if (onAuthorInteractionListener != null) {
+            onAuthorInteractionListener.onAuthorRemoved(author);
+        }
+
+        authorList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public interface OnAuthorInteractionListener {
+        void onAuthorRemoved(Author author);
+        void onAuthorEdit(Author author);
     }
 }

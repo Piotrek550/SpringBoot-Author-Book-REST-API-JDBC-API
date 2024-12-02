@@ -22,34 +22,100 @@ import retrofit2.Response;
 
 public class AuthorFormActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
+    private TextInputEditText inputEditName;
+    private TextInputEditText inputEditAge;
+    private MaterialButton buttonSave;
+
+    private RetrofitService retrofitService;
+    private AuthorApi authorApi;
+
+    private Author existingAuthor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_author_form);
 
-        Toolbar toolbar = findViewById(R.id.authorForm_toolbar);
+        toolbar = findViewById(R.id.authorForm_toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        this.initializeComponents();
+        retrofitService = new RetrofitService();
+        authorApi = retrofitService.getRetrofit().create(AuthorApi.class);
+
+        inputEditName = findViewById(R.id.form_authorName);
+        inputEditAge = findViewById(R.id.form_authorAge);
+        buttonSave = findViewById(R.id.form_buttonCreateAuthor);
+
+        this.initializeFrom();
+
+        buttonSave.setOnClickListener(view -> saveAuthor());
     }
 
-    private void initializeComponents() {
-        TextInputEditText inputEditName = findViewById(R.id.form_authorName);
-        TextInputEditText inputEditAge = findViewById(R.id.form_authorAge);
-        MaterialButton buttonSave = findViewById(R.id.form_buttonCreate);
+    private void initializeFrom(){
+        Long id = getIntent().getLongExtra("AUTHOR_ID", -1);
+        String name = getIntent().getStringExtra("AUTHOR_NAME");
+        Integer age = getIntent().getIntExtra("AUTHOR_AGE", -1);
 
-        RetrofitService retrofitService = new RetrofitService();
-        AuthorApi authorApi = retrofitService.getRetrofit().create(AuthorApi.class);
+        if( name != null && age != -1){
+            existingAuthor = new Author();
+            existingAuthor.setId(id);
+            existingAuthor.setName(name);
+            existingAuthor.setAge(age);
 
-        buttonSave.setOnClickListener(view -> {
-            String name = String.valueOf(inputEditName.getText());
-            Integer age = Integer.valueOf(String.valueOf(inputEditAge.getText()));
+            inputEditName.setText(name);
+            inputEditAge.setText(String.valueOf(age));
 
+            toolbar.setTitle("Edit Author");
+            buttonSave.setText("Edit");
+        }
+    }
+
+    private void saveAuthor() {
+        String name = String.valueOf(inputEditName.getText());
+        //Integer age = Integer.valueOf(String.valueOf(inputEditAge.getText()));
+        String ageText = String.valueOf(inputEditAge.getText());
+
+        if (name.isEmpty() || ageText.isEmpty()) {
+            Toast.makeText(this, "Name and Age are required!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int age;
+        try {
+            age = Integer.parseInt(ageText);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Age must be a valid number!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (existingAuthor != null) {
+            existingAuthor.setName(name);
+            existingAuthor.setAge(age);
+
+            authorApi.updateAuthor(existingAuthor.getId(), existingAuthor).enqueue(new Callback<Author>() {
+                @Override
+                public void onResponse(Call<Author> call, Response<Author> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(AuthorFormActivity.this, "Author updated successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(AuthorFormActivity.this, "Failed to update author!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Author> call, Throwable t) {
+                    Toast.makeText(AuthorFormActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Logger.getLogger(AuthorFormActivity.class.getName()).log(Level.SEVERE, "Error occurred", t);
+                }
+            });
+        }else{
             Author author = new Author();
             author.setName(name);
             author.setAge(age);
@@ -59,6 +125,7 @@ public class AuthorFormActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Author> call, Response<Author> response) {
                             Toast.makeText(AuthorFormActivity.this, "Save successful!", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
 
                         @Override
@@ -67,6 +134,6 @@ public class AuthorFormActivity extends AppCompatActivity {
                             Logger.getLogger(AuthorFormActivity.class.getName()).log(Level.SEVERE, "Error occurred", t);
                         }
                     });
-        });
+        }
     }
 }

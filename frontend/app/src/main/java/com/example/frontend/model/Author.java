@@ -1,6 +1,8 @@
 package com.example.frontend.model;
 
-public class Author {
+import java.io.Serializable;
+
+public class Author implements Serializable {
 
     private Long id;
 
@@ -75,6 +77,7 @@ public class Author {
     }
 
     public String toString() {
-        return "AuthorDto(id=" + this.getId() + ", name=" + this.getName() + ", age=" + this.getAge() + ")";
+        //return "AuthorDto(id=" + this.getId() + ", name=" + this.getName() + ", age=" + this.getAge() + ")";
+        return this.getName() + ", age: " + this.getAge();
     }
 }
