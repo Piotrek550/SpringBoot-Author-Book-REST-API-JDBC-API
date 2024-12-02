@@ -1,6 +1,9 @@
 package com.example.frontend;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -77,8 +80,9 @@ public class AuthorFormActivity extends AppCompatActivity {
     }
 
     private void saveAuthor() {
+        String token = Authorization.getAuthorizationToken(this);
+
         String name = String.valueOf(inputEditName.getText());
-        //Integer age = Integer.valueOf(String.valueOf(inputEditAge.getText()));
         String ageText = String.valueOf(inputEditAge.getText());
 
         if (name.isEmpty() || ageText.isEmpty()) {
@@ -98,7 +102,7 @@ public class AuthorFormActivity extends AppCompatActivity {
             existingAuthor.setName(name);
             existingAuthor.setAge(age);
 
-            authorApi.updateAuthor(existingAuthor.getId(), existingAuthor).enqueue(new Callback<Author>() {
+            authorApi.updateAuthor("Bearer "+token, existingAuthor.getId(), existingAuthor).enqueue(new Callback<Author>() {
                 @Override
                 public void onResponse(Call<Author> call, Response<Author> response) {
                     if (response.isSuccessful()) {
@@ -120,7 +124,7 @@ public class AuthorFormActivity extends AppCompatActivity {
             author.setName(name);
             author.setAge(age);
 
-            authorApi.createAuthor(author)
+            authorApi.createAuthor("Bearer "+token, author)
                     .enqueue(new Callback<Author>() {
                         @Override
                         public void onResponse(Call<Author> call, Response<Author> response) {

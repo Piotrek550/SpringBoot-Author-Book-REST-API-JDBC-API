@@ -1,5 +1,7 @@
 package com.example.frontend;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.AdapterView;
@@ -105,7 +107,9 @@ public class BookFormActivity extends AppCompatActivity {
     }
 
     private void loadAuthors() {
-        authorApi.getAllAuthors().enqueue(new Callback<List<Author>>() {
+        String token = Authorization.getAuthorizationToken(this);
+
+        authorApi.getAllAuthors("Bearer "+token).enqueue(new Callback<List<Author>>() {
             @Override
             public void onResponse(Call<List<Author>> call, Response<List<Author>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -148,6 +152,8 @@ public class BookFormActivity extends AppCompatActivity {
     }
 
     private void saveBook() {
+        String token = Authorization.getAuthorizationToken(this);
+
         String isbn = String.valueOf(inputEditIsbn.getText());
         String title = String.valueOf(inputEditTitle.getText());
         Author selectedAuthor = (Author) authorAutoComplete.getTag();
@@ -168,7 +174,7 @@ public class BookFormActivity extends AppCompatActivity {
             existingBook.setTitle(title);
             existingBook.setAuthor(selectedAuthor);
 
-            bookApi.updateBook(isbn, existingBook).enqueue(new Callback<Book>() {
+            bookApi.updateBook("Bearer "+token, isbn, existingBook).enqueue(new Callback<Book>() {
                 @Override
                 public void onResponse(Call<Book> call, Response<Book> response) {
                     if (response.isSuccessful()) {
@@ -192,7 +198,7 @@ public class BookFormActivity extends AppCompatActivity {
             book.setTitle(title);
             book.setAuthor(selectedAuthor);
 
-            bookApi.createBook(isbn, book).enqueue(new Callback<Book>() {
+            bookApi.createBook("Bearer "+token, isbn, book).enqueue(new Callback<Book>() {
                 @Override
                 public void onResponse(Call<Book> call, Response<Book> response) {
                     if (response.isSuccessful()) {

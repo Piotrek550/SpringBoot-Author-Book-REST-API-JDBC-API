@@ -12,4 +12,16 @@
     <string name="book_author">Author</string>
     <string name="example_isbn">Example ISBNs:\nISBN-10: 3-1614-8410-0\nISBN-13: 978-3-1614-8410-0</string>
     <string name="copyright_bednarski_i_brzozowski">Copyright© Bednarski i Brzozowski</string>
+    <string name="form_register_username">Username</string>
+    <string name="form_register_password">Password</string>
+    <string name="form_register_cpassword">Confirm Password</string>
+    <string name="registerButton">Register</string>
+    <string name="form_login_username">Username</string>
+    <string name="form_login_password">Password</string>
+    <string name="loginButton">Login</string>
+    <string name="already_have_an_account_log_in_here">Already have an account? Log in here.</string>
+    <string name="don_t_have_an_account_yet_register_here">Don\'t have an account yet? Register here.</string>
+    <string name="logout">Logout</string>
+    <string name="logout_text">Logout</string>
+
 </resources>

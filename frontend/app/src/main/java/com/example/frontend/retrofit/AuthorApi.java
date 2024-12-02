@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -17,14 +18,14 @@ import retrofit2.http.Path;
 public interface AuthorApi {
 
     @GET("/authors")
-    Call<List<Author>> getAllAuthors();
+    Call<List<Author>> getAllAuthors(@Header("Authorization") String jwtToken);
 
     @POST("/authors")
-    Call<Author> createAuthor(@Body Author author);
+    Call<Author> createAuthor(@Header("Authorization") String jwtToken, @Body Author author);
 
     @DELETE("/authors/{id}")
-    Call<Author> deleteAuthor(@Path("id") Long id);
+    Call<Author> deleteAuthor(@Header("Authorization") String jwtToken, @Path("id") Long id);
 
     @PATCH("/authors/{id}")
-    Call<Author> updateAuthor(@Path("id") Long id, @Body Author author);
+    Call<Author> updateAuthor(@Header("Authorization") String jwtToken, @Path("id") Long id, @Body Author author);
 }

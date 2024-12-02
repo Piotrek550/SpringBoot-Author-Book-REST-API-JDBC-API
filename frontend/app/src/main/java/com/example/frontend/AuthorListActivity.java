@@ -1,7 +1,9 @@
 package com.example.frontend;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -61,11 +63,25 @@ public class AuthorListActivity extends AppCompatActivity {
     }
 
     private void loadAuthors() {
-        authorApi.getAllAuthors()
+        String token = Authorization.getAuthorizationToken(this);
+
+        authorApi.getAllAuthors("Bearer "+token)
                 .enqueue(new Callback<List<Author>>() {
                     @Override
                     public void onResponse(Call<List<Author>> call, Response<List<Author>> response) {
-                        populateListView(response.body());
+                        //populateListView(response.body());
+                        if (response.isSuccessful() && response.code() == 200) {
+                            // Jeśli odpowiedź jest poprawna, załaduj autorów
+                            List<Author> authors = response.body();
+                            populateListView(authors);
+                        } else if (response.code() == 401) {
+                            // Jeśli brak autoryzacji, przekieruj do logowania
+                            Toast.makeText(AuthorListActivity.this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
+                            Authorization.redirectToLogin(AuthorListActivity.this);
+                        } else {
+                            // Inne błędy
+                            Toast.makeText(AuthorListActivity.this, "Failed to load authors. Error code: " + response.code(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -116,7 +132,9 @@ public class AuthorListActivity extends AppCompatActivity {
     }
 
     private void deleteAuthorFromDatabase(Author author) {
-        authorApi.deleteAuthor(author.getId())
+        String token = Authorization.getAuthorizationToken(this);
+
+        authorApi.deleteAuthor("Bearer "+token, author.getId())
                 .enqueue(new Callback<Author>() {
                     @Override
                     public void onResponse(Call<Author> call, Response<Author> response) {

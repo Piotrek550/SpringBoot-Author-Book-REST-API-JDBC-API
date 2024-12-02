@@ -1,7 +1,9 @@
 package com.example.frontend;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -59,7 +61,9 @@ public class BookListActivity extends AppCompatActivity {
     }
 
     private void loadBooks() {
-        bookApi.getAllBooks()
+        String token = Authorization.getAuthorizationToken(this);
+
+        bookApi.getAllBooks("Bearer "+token)
                 .enqueue(new Callback<List<Book>>() {
                     @Override
                     public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
@@ -114,7 +118,9 @@ public class BookListActivity extends AppCompatActivity {
     }
 
     private void deleteBookFromDatabase(Book book) {
-        bookApi.deleteBook(book.getIsbn())
+        String token = Authorization.getAuthorizationToken(this);
+
+        bookApi.deleteBook("Bearer "+token, book.getIsbn())
                 .enqueue(new Callback<Book>() {
                     @Override
                     public void onResponse(Call<Book> call, Response<Book> response) {
