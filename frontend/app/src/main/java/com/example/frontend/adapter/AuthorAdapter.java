@@ -34,7 +34,6 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorHolder> {
         holder.name.setText(author.getName());
         holder.age.setText(String.valueOf(author.getAge()));
 
-        // Kliknięcie w element -> edycja
         holder.itemView.setOnClickListener(v -> {
             if (onAuthorInteractionListener != null) {
                 onAuthorInteractionListener.onAuthorEdit(author);

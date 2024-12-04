@@ -28,14 +28,12 @@ public class Authorization {
         return token;
     }
 
-    // Funkcja przekierowująca użytkownika do ekranu logowania
     public static void redirectToLogin(Context context) {
         Intent loginIntent = new Intent(context, LoginActivity.class); // Przekierowanie do ekranu logowania
         loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Czyści stack aktywności
         context.startActivity(loginIntent);
     }
 
-    // Funkcja do zapisania tokenu
     public static void saveToken(Context context, String token) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -44,7 +42,6 @@ public class Authorization {
         Log.d("AUTH", "Token saved: " + token);
     }
 
-    // Funkcja do usunięcia tokenu (np. przy wylogowaniu)
     public static void clearToken(Context context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

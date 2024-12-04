@@ -40,7 +40,7 @@ public class JsonExporter {
 
         // PLIK
         File jsonFile = new File(exportDir, "authors.json");
-        String notificationTitle = "Export Authors Success";
+        String notificationTitle = "Authors exported successfully";
         try (FileWriter writer = new FileWriter(jsonFile)) {
             writer.write(jsonContent);
             showNotification(context, notificationTitle, jsonFile.getAbsolutePath());
@@ -68,7 +68,7 @@ public class JsonExporter {
 
         // PLIK
         File jsonFile = new File(exportDir, "books.json");
-        String notificationTitle = "Export Books Success";
+        String notificationTitle = "Books exported successfully";
         try (FileWriter writer = new FileWriter(jsonFile)) {
             writer.write(jsonContent);
             showNotification(context, notificationTitle, jsonFile.getAbsolutePath());
@@ -83,7 +83,7 @@ public class JsonExporter {
     private static void showNotification(Context context, String title, String filePath) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Tworzenie kanału powiadomień (dla Android 8.0+)
+        // Tworzenie kanalu powiadomien
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("Notifications for export operations");
@@ -94,7 +94,7 @@ public class JsonExporter {
 
         // Budowanie powiadomienia
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_menu_save) // Ikona systemowa
+                .setSmallIcon(android.R.drawable.ic_menu_save)
                 .setContentTitle(title)
                 .setContentText("File saved at: " + filePath)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);

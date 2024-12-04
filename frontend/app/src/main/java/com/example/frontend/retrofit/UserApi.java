@@ -11,7 +11,6 @@ public interface UserApi {
     @POST("/register")
     Call<Void> registerUser(@Body User user);
 
-    // Endpoint do logowania użytkownika
     @POST("/login")
     Call<UserResponse> loginUser(@Body User user);
 }

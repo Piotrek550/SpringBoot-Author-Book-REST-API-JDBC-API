@@ -85,8 +85,15 @@ public class AuthorFormActivity extends AppCompatActivity {
         String name = String.valueOf(inputEditName.getText());
         String ageText = String.valueOf(inputEditAge.getText());
 
-        if (name.isEmpty() || ageText.isEmpty()) {
-            Toast.makeText(this, "Name and Age are required!", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty()) {
+            inputEditName.setError("Name is required!");
+            Toast.makeText(this, "Name is required!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (ageText.isEmpty()) {
+            inputEditAge.setError("Age is required!");
+            Toast.makeText(this, "Age is required!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -94,6 +101,7 @@ public class AuthorFormActivity extends AppCompatActivity {
         try {
             age = Integer.parseInt(ageText);
         } catch (NumberFormatException e) {
+            inputEditAge.setError("Age must be a valid number!");
             Toast.makeText(this, "Age must be a valid number!", Toast.LENGTH_SHORT).show();
             return;
         }

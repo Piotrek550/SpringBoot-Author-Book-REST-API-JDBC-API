@@ -46,8 +46,21 @@ public class RegisterActivity extends AppCompatActivity {
             String password = inputPassword.getText().toString().trim();
             String cpassword = inputConfirmPassword.getText().toString().trim();
 
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Fields cannot be empty!", Toast.LENGTH_SHORT).show();
+            if (username.isEmpty()) {
+                inputUsername.setError("Username section cannot be empty!");
+                Toast.makeText(this, "Username section cannot be empty!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (password.isEmpty()) {
+                inputPassword.setError("Password section cannot be empty!");
+                Toast.makeText(this, "Password section cannot be empty!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (cpassword.isEmpty()) {
+                inputConfirmPassword.setError("Confirm password section cannot be empty!");
+                Toast.makeText(this, "Confirm password section cannot be empty!", Toast.LENGTH_SHORT).show();
                 return;
             }
 

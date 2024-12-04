@@ -24,7 +24,8 @@
         android:layout_margin="20dp"
         android:padding="30dp"
         android:textSize="20sp"
-        android:text="@string/toAuthors_button" />
+        android:text="@string/toAuthors_button"
+        android:drawableTop="@drawable/writing_pen_48x48" />
 
     <Button
         android:id="@+id/toBooks_button"
@@ -39,6 +40,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:orientation="vertical" >
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_logout"

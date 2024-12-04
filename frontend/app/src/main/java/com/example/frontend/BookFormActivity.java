@@ -32,9 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BookFormActivity extends AppCompatActivity {
-
     private Toolbar toolbar;
-
     private AutoCompleteTextView authorAutoComplete;
     private TextInputEditText inputEditIsbn;
     private TextView textViewExampleIsbn;
@@ -42,8 +40,8 @@ public class BookFormActivity extends AppCompatActivity {
     private MaterialButton buttonSave;
     private BookApi bookApi;
     private AuthorApi authorApi;
-
-    private Book existingBook; // Obiekt reprezentujący edytowaną książkę (jeśli jest)
+    private Book existingBook;
+    private List<Book> existingBooks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,36 +66,58 @@ public class BookFormActivity extends AppCompatActivity {
         bookApi = retrofitService.getRetrofit().create(BookApi.class);
         authorApi = retrofitService.getRetrofit().create(AuthorApi.class);
 
-        // Pobierz autorów do AutoCompleteTextView
-        loadAuthors();
+        this.loadBooks();
 
-        // Inicjalizacja formularza (wypełnienie danymi w przypadku edycji)
-        initializeForm();
+        this.loadAuthors();
 
-        // Obsługa zapisu książki
+        this.initializeForm();
+
         buttonSave.setOnClickListener(view -> saveBook());
     }
 
+    private void loadBooks() {
+        String token = Authorization.getAuthorizationToken(this);
+        bookApi.getAllBooks("Bearer " + token).enqueue(new Callback<List<Book>>() {
+            @Override
+            public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    existingBooks = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Book>> call, Throwable t) {
+                Toast.makeText(BookFormActivity.this, "Failed to load books.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean doesIsbnExist(String isbn) {
+        if (existingBooks == null) return false;
+        for (Book book : existingBooks) {
+            if (book.getIsbn().equals(isbn)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void initializeForm() {
-        // Pobierz dane książki z Intent (jeśli edytujemy książkę)
         String isbn = getIntent().getStringExtra("BOOK_ISBN");
         String title = getIntent().getStringExtra("BOOK_TITLE");
         Author author = (Author) getIntent().getSerializableExtra("BOOK_AUTHOR");
 
         if (isbn != null && title != null && author != null) {
-            // Tryb edycji książki
             existingBook = new Book();
             existingBook.setIsbn(isbn);
             existingBook.setTitle(title);
             existingBook.setAuthor(author);
 
-            // Wypełnij pola formularza
             inputEditIsbn.setText(isbn);
             inputEditTitle.setText(title);
             authorAutoComplete.setText(author.getName());
             authorAutoComplete.setTag(author);
 
-            // ISBN nie można zmieniać (pole tylko do odczytu)
             inputEditIsbn.setEnabled(false);
 
             toolbar.setTitle("Edit Book");
@@ -158,19 +178,33 @@ public class BookFormActivity extends AppCompatActivity {
         String title = String.valueOf(inputEditTitle.getText());
         Author selectedAuthor = (Author) authorAutoComplete.getTag();
 
+        if (doesIsbnExist(isbn) && existingBook == null) {
+            inputEditIsbn.setError("This ISBN already exists!");
+            Toast.makeText(this, "Book with this ISBN already exists!", Toast.LENGTH_SHORT).show();
+            return;
+        } else { inputEditIsbn.setError(null); }
+
         if (!isValidIsbn(isbn)) {
             inputEditIsbn.setError("Invalid ISBN");
             Toast.makeText(this, "Invalid ISBN", Toast.LENGTH_SHORT).show();
             return;
         } else { inputEditIsbn.setError(null); }
 
+        if (title.isEmpty()) {
+            inputEditTitle.setError("Enter a title!");
+            Toast.makeText(this, "Enter a title!", Toast.LENGTH_SHORT).show();
+            return;
+        } else { inputEditTitle.setError(null); }
+
         if (selectedAuthor == null) {
+            authorAutoComplete.setError("Select an author!");
             Toast.makeText(this, "Select an author!", Toast.LENGTH_SHORT).show();
             return;
-        }
+        } else { authorAutoComplete.setError(null); }
+
+        //
 
         if (existingBook != null) {
-            // Tryb edycji
             existingBook.setTitle(title);
             existingBook.setAuthor(selectedAuthor);
 
@@ -192,7 +226,6 @@ public class BookFormActivity extends AppCompatActivity {
                 }
             });
         } else {
-            // Tryb tworzenia nowej książki
             Book book = new Book();
             book.setIsbn(isbn);
             book.setTitle(title);

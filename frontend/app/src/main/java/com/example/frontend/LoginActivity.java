@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import android.util.Log;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.frontend.model.User;
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login_form);
 
         inputUsername = findViewById(R.id.form_login_username);
@@ -44,8 +46,15 @@ public class LoginActivity extends AppCompatActivity {
             String username = inputUsername.getText().toString().trim();
             String password = inputPassword.getText().toString().trim();
 
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Fields cannot be empty!", Toast.LENGTH_SHORT).show();
+            if (username.isEmpty()) {
+                inputUsername.setError("Username section cannot be empty!");
+                Toast.makeText(this, "Username section cannot be empty!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (password.isEmpty()) {
+                inputPassword.setError("Password section cannot be empty!");
+                Toast.makeText(this, "Password section cannot be empty!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -65,12 +74,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
 
-                    // Save token in SharedPreferences
                     Authorization.saveToken(context, token);
 
                     Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
 
-                    // Redirect to main activity or dashboard
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -85,14 +92,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private void saveTokenToSharedPreferences(String token) {
-//        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString("auth_token", token);
-//        editor.apply();
-//        //Log.d("TOKEN: ", sharedPreferences.getString("auth_token", null));// Używamy apply(), aby asynchronicznie zapisać dane
-//    }
-
 }
 

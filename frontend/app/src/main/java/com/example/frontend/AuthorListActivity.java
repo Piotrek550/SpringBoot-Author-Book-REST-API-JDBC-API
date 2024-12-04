@@ -27,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AuthorListActivity extends AppCompatActivity {
-
+    private Toolbar toolbar;
     private RecyclerView recyclerView;
     private AuthorAdapter authorAdapter;
     private AuthorApi authorApi;
@@ -38,7 +38,7 @@ public class AuthorListActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_author_list);
 
-        Toolbar toolbar = findViewById(R.id.authorList_toolbar);
+        toolbar = findViewById(R.id.authorList_toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -69,17 +69,13 @@ public class AuthorListActivity extends AppCompatActivity {
                 .enqueue(new Callback<List<Author>>() {
                     @Override
                     public void onResponse(Call<List<Author>> call, Response<List<Author>> response) {
-                        //populateListView(response.body());
                         if (response.isSuccessful() && response.code() == 200) {
-                            // Jeśli odpowiedź jest poprawna, załaduj autorów
                             List<Author> authors = response.body();
                             populateListView(authors);
                         } else if (response.code() == 401) {
-                            // Jeśli brak autoryzacji, przekieruj do logowania
                             Toast.makeText(AuthorListActivity.this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
                             Authorization.redirectToLogin(AuthorListActivity.this);
                         } else {
-                            // Inne błędy
                             Toast.makeText(AuthorListActivity.this, "Failed to load authors. Error code: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -105,17 +101,16 @@ public class AuthorListActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(authorAdapter);
 
-        // Dodanie obsługi przesuwania
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false; // Nie obsługujemy przesuwania w górę/dół
+                return false;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                authorAdapter.removeItem(position); // Usuń książkę z adaptera
+                authorAdapter.removeItem(position);
             }
         };
 

@@ -38,7 +38,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookHolder> {
         holder.title.setText(book.getTitle());
         holder.author.setText(author.getName());
 
-        // Kliknięcie w element -> edycja
         holder.itemView.setOnClickListener(v -> {
             if (onBookInteractionListener != null) {
                 onBookInteractionListener.onBookEdit(book);

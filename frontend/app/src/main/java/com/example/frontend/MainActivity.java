@@ -26,19 +26,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    private Toolbar toolbar;
+    private Button buttonGoToAuthors;
+    private Button buttonGoToBooks;
+    private FloatingActionButton fabLogout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.homePage_toolbar);
+        toolbar = findViewById(R.id.homePage_toolbar);
         setSupportActionBar(toolbar);
 
-        Button buttonGoToAuthors = findViewById(R.id.toAuthors_button);
-        Button buttonGoToBooks = findViewById(R.id.toBooks_button);
+        buttonGoToAuthors = findViewById(R.id.toAuthors_button);
+        buttonGoToBooks = findViewById(R.id.toBooks_button);
 
-        FloatingActionButton fabLogout = findViewById(R.id.fab_logout);
+        fabLogout = findViewById(R.id.fab_logout);
         fabLogout.setOnClickListener(view -> logout());
 
         buttonGoToAuthors.setOnClickListener(new View.OnClickListener() {
@@ -59,10 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("auth_token");
-        editor.apply();
+        Authorization.clearToken(this);
 
         Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
 

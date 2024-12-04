@@ -26,7 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BookListActivity extends AppCompatActivity {
-
+    private Toolbar toolbar;
     private RecyclerView recyclerView;
     private BookAdapter bookAdapter;
     private BookApi bookApi;
@@ -37,7 +37,7 @@ public class BookListActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_book_list);
 
-        Toolbar toolbar = findViewById(R.id.bookList_toolbar);
+        toolbar = findViewById(R.id.bookList_toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -90,8 +90,7 @@ public class BookListActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(bookAdapter);
-
-        // Dodanie obsługi przesuwania
+        
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
